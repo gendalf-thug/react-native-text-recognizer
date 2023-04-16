@@ -10,13 +10,7 @@ npm install react-native-text-recognizer
 
 ## Usage
 
-```js
-import { multiply } from 'react-native-text-recognizer';
-
-// ...
-
-const result = await multiply(3, 7);
-```
+See [example folder](subpro/subtext.md)
 
 ## Contributing
 
