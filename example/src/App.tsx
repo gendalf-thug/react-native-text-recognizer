@@ -1,31 +1,82 @@
-import * as React from 'react';
+import * as React from 'react'
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-text-recognizer';
+import {ScrollView, StyleSheet} from 'react-native'
+import {Text} from './components/Text'
+import {Button} from './components/Button'
+import {Spacer} from './components/Spacer'
+import {
+  useCameraPermissions,
+  useGalleryPermissions,
+} from './hooks/usePermissions'
+// @ts-ignore
+import {recognizeTextFromLocalImage} from 'react-native-text-recognizer'
+import ImagePicker from 'react-native-image-crop-picker'
+import {imagePickerConfig} from './variables'
+import {Color} from './themes'
+import {findCardNumberInArray} from './helper'
 
-export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+const App = () => {
+  const [result, setResult] = React.useState<string>('')
+  const {isAllowed: isAllowedCamera, requestCameraPermission} =
+    useCameraPermissions()
+  const {isAllowed: isAllowedGallery, requestGalleryPermission} =
+    useGalleryPermissions()
 
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
+  const handleRecognize = async (localPath: string) => {
+    const res = await recognizeTextFromLocalImage(localPath)
+    console.log('🚀 - res:', res)
+
+    const cardNumber = findCardNumberInArray(res)
+    setResult(cardNumber ?? 'Card number not recognized')
+  }
+
+  const takePhoto = async () => {
+    try {
+      const canTakePhoto = isAllowedCamera
+        ? true
+        : await requestCameraPermission()
+      if (canTakePhoto) {
+        const img = await ImagePicker.openCamera(imagePickerConfig)
+        handleRecognize(img.path)
+      }
+    } catch (error) {
+      console.log('🚀 - error:', error)
+    }
+  }
+  const pickFromGallery = async () => {
+    try {
+      const canChoicePhoto = isAllowedGallery
+        ? true
+        : await requestGalleryPermission()
+
+      if (canChoicePhoto) {
+        const img = await ImagePicker.openPicker(imagePickerConfig)
+        handleRecognize(img.path)
+      }
+    } catch (error) {
+      console.log('🚀 - error:', error)
+    }
+  }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <Spacer height={80} />
+      <Button onPress={pickFromGallery}>Pick image from gallery</Button>
+      <Spacer height={20} />
+      <Button onPress={takePhoto}>Take a photo</Button>
+      <Spacer height={40} />
       <Text>Result: {result}</Text>
-    </View>
-  );
+      <Spacer height={120} />
+    </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: Color.bg,
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});
+})
+
+export default App

@@ -6,17 +6,31 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "pods": "pod-install --quiet"
+    "pods": "pod-install --quiet",
+    "lint": "eslint .",
+    "postinstall": "react-native setup-ios-permissions"
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.71.6"
+    "react-native": "0.71.6",
+    "react-native-image-crop-picker": "^0.39.0",
+    "react-native-permissions": "^3.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@react-native-community/eslint-config": "^3.2.0",
+    "@tsconfig/react-native": "^2.0.3",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "metro-react-native-babel-preset": "0.73.9",
-    "babel-plugin-module-resolver": "^4.1.0"
-  }
+    "typescript": "^5.0.4"
+  },
+  "reactNativePermissionsIOS": [
+    "Camera",
+    "PhotoLibrary"
+  ]
 }

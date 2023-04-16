@@ -17,6 +17,9 @@ const TextRecognizer = NativeModules.TextRecognizer
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return TextRecognizer.multiply(a, b);
+export async function recognizeTextFromLocalImage(
+  path: string
+): Promise<string[]> {
+  const res = await TextRecognizer.recognizeText(path);
+  return Platform.OS === 'android' ? res.lines : res;
 }
